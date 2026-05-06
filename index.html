@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI API Cost Calculator</title>
+  <meta name="description" content="Compare GPT, DeepSeek, Qwen and low-cost AI model API costs.">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #17212b;
+      --muted: #5c6b78;
+      --line: #d9e1e8;
+      --bg: #f7f9fb;
+      --accent: #1167b1;
+      --green: #0c7c59;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.45;
+    }
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px 56px;
+    }
+    h1 {
+      font-size: 34px;
+      line-height: 1.1;
+      margin: 0 0 10px;
+      letter-spacing: 0;
+    }
+    .lead {
+      color: var(--muted);
+      max-width: 720px;
+      margin: 0 0 24px;
+      font-size: 17px;
+    }
+    .panel {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      margin: 16px 0;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+    input, select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 10px 11px;
+      font-size: 15px;
+      background: #fff;
+      color: var(--ink);
+    }
+    button, .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      border: 0;
+      border-radius: 6px;
+      padding: 10px 14px;
+      background: var(--accent);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      font-size: 14px;
+    }
+    th {
+      background: #edf3f8;
+      color: #2b3b48;
+    }
+    tr:last-child td { border-bottom: 0; }
+    .saving {
+      color: var(--green);
+      font-weight: 700;
+    }
+    .cta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: #102a43;
+      color: #fff;
+      border-radius: 8px;
+      padding: 18px;
+      margin-top: 18px;
+    }
+    .cta p { margin: 0; color: #d9e8f5; }
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .cta { align-items: flex-start; flex-direction: column; }
+      h1 { font-size: 28px; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>AI API Cost Calculator</h1>
+    <p class="lead">Estimate monthly API costs and compare premium GPT usage with lower-cost model routing.</p>
+
+    <section class="panel">
+      <div class="grid">
+        <div>
+          <label for="requests">Requests per month</label>
+          <input id="requests" type="number" value="100000" min="1">
+        </div>
+        <div>
+          <label for="inputTokens">Average input tokens</label>
+          <input id="inputTokens" type="number" value="800" min="1">
+        </div>
+        <div>
+          <label for="outputTokens">Average output tokens</label>
+          <input id="outputTokens" type="number" value="400" min="1">
+        </div>
+      </div>
+    </section>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Model route</th>
+          <th>Input $/1M</th>
+          <th>Output $/1M</th>
+          <th>Estimated monthly cost</th>
+          <th>Use case</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+    <section class="cta">
+      <div>
+        <strong>Try a multi-model gateway</strong>
+        <p>Use selected free/low-cost models for testing and premium GPT models when you need stronger reasoning.</p>
+      </div>
+      <a class="button" href="https://www.tken.shop/?utm_source=github&utm_medium=calculator&utm_campaign=ai_api_cost_calculator">Try TKEN</a>
+    </section>
+  </main>
+  <script>
+    const models = [
+      { name: "Premium GPT route", input: 5, output: 30, use: "Reasoning, coding, high-value answers" },
+      { name: "Balanced Chinese model route", input: 0.5, output: 1.5, use: "Summaries, extraction, drafts" },
+      { name: "Free/low-cost test route", input: 0.05, output: 0.15, use: "Testing, simple tasks, batch work" }
+    ];
+
+    function money(value) {
+      return new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(value);
+    }
+
+    function render() {
+      const requests = Number(document.getElementById("requests").value || 0);
+      const inputTokens = Number(document.getElementById("inputTokens").value || 0);
+      const outputTokens = Number(document.getElementById("outputTokens").value || 0);
+      const rows = document.getElementById("rows");
+      rows.innerHTML = "";
+      const premiumCost = ((requests * inputTokens) / 1_000_000) * models[0].input + ((requests * outputTokens) / 1_000_000) * models[0].output;
+
+      for (const model of models) {
+        const cost = ((requests * inputTokens) / 1_000_000) * model.input + ((requests * outputTokens) / 1_000_000) * model.output;
+        const saving = premiumCost > 0 && model.name !== models[0].name ? ` · <span class="saving">${Math.round((1 - cost / premiumCost) * 100)}% lower</span>` : "";
+        rows.insertAdjacentHTML("beforeend", `
+          <tr>
+            <td>${model.name}</td>
+            <td>$${model.input}</td>
+            <td>$${model.output}</td>
+            <td>${money(cost)}${saving}</td>
+            <td>${model.use}</td>
+          </tr>
+        `);
+      }
+    }
+
+    document.querySelectorAll("input").forEach((input) => input.addEventListener("input", render));
+    render();
+  </script>
+</body>
+</html>

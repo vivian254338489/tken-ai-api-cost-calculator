@@ -1,0 +1,20 @@
+[
+  {
+    "name": "Premium GPT route",
+    "input_usd_per_1m": 5,
+    "output_usd_per_1m": 30,
+    "use_case": "Reasoning, coding, high-value answers"
+  },
+  {
+    "name": "Balanced Chinese model route",
+    "input_usd_per_1m": 0.5,
+    "output_usd_per_1m": 1.5,
+    "use_case": "Summaries, extraction, drafts"
+  },
+  {
+    "name": "Free/low-cost test route",
+    "input_usd_per_1m": 0.05,
+    "output_usd_per_1m": 0.15,
+    "use_case": "Testing, simple tasks, batch work"
+  }
+]
