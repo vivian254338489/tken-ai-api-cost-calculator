@@ -28,6 +28,7 @@ https://www.tken.shop/?utm_source=github&utm_medium=readme&utm_campaign=ai_api_c
 - `models.json` - editable model pricing table
 - `docs/seo-page.md` - SEO article draft
 - `docs/utm-links.md` - tracking links
+- `docs/screenshot-gif-brief.md` - visual asset capture plan for GitHub and directory listings
 
 ## Local Usage
 
