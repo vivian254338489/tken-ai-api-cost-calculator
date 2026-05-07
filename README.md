@@ -22,6 +22,10 @@ Start here:
 
 https://www.tken.shop/?utm_source=github&utm_medium=readme&utm_campaign=ai_api_cost_calculator
 
+Live calculator:
+
+https://vivian254338489.github.io/tken-ai-api-cost-calculator/?utm_source=github&utm_medium=readme&utm_campaign=ai_api_cost_calculator&utm_content=live_demo
+
 ## Files
 
 - `index.html` - static calculator page
